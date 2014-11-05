@@ -50,7 +50,7 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
-  module_boilerplate_ok('lib/ZMQ/LibZMQ2/LibZMQ3.pm');
+  module_boilerplate_ok('lib/ZMQ/LibZMQ3/LibZMQ2.pm');
 
 
 }
