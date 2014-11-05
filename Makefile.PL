@@ -4,10 +4,10 @@ use warnings FATAL => 'all';
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME             => 'ZMQ::LibZMQ2::LibZMQ3',
+    NAME             => 'ZMQ::LibZMQ3::LibZMQ2',
     AUTHOR           => q{Binary.com <perl@binary.com>},
-    VERSION_FROM     => 'lib/ZMQ/LibZMQ2/LibZMQ3.pm',
-    ABSTRACT_FROM    => 'lib/ZMQ/LibZMQ2/LibZMQ3.pm',
+    VERSION_FROM     => 'lib/ZMQ/LibZMQ3/LibZMQ2.pm',
+    ABSTRACT_FROM    => 'lib/ZMQ/LibZMQ3/LibZMQ2.pm',
     LICENSE          => 'BSD',
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.006,

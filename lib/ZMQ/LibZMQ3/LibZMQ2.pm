@@ -7,7 +7,7 @@ use ZMQ::LibZMQ3;
 
 =head1 NAME
 
-ZMQ::LibZMQ2::LibZMQ3 - Seamlessly Run LibZMQ Progs against LibZMQ3
+ZMQ::LibZMQ3::LibZMQ2 - Seamlessly Run LibZMQ Progs against LibZMQ3
 
 =head1 VERSION
 
@@ -114,12 +114,13 @@ my %fmap = (
 
 { 
     no strict 'refs';
+    no warnings 'once';
     my $pkg = __PACKAGE__;
     *{"${pkg}::$_->{export}"} = *{"ZMQ::LibZMQ3::$_->{import}"}
     for map { 
           my $target = $_;
           $target = $fmap{$_} if exists $fmap{$_};
-          $target ? ( import => $target, export => $_ ) : ();
+          $target ? { import => $target, export => $_ } : ();
     } @EXPORTS;
 };
 

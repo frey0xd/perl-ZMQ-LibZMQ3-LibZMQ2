@@ -7,7 +7,7 @@ use Test::More;
 plan tests => 1;
 
 BEGIN {
-    use_ok( 'ZMQ::LibZMQ2::LibZMQ3' ) || print "Bail out!\n";
+    use_ok( 'ZMQ::LibZMQ3::LibZMQ2' ) || print "Bail out!\n";
 }
 
-diag( "Testing ZMQ::LibZMQ2::LibZMQ3 $ZMQ::LibZMQ2::LibZMQ3::VERSION, Perl $], $^X" );
+diag( "Testing ZMQ::LibZMQ3::LibZMQ2 $ZMQ::LibZMQ3::LibZMQ2::VERSION, Perl $], $^X" );
