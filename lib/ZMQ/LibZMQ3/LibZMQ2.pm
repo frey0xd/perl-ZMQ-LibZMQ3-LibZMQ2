@@ -1,12 +1,13 @@
-package ZMQ::LibZMQ2::LibZMQ3;
+package ZMQ::LibZMQ3::LibZMQ2;
 
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
+use ZMQ::LibZMQ3;
 
 =head1 NAME
 
-ZMQ::LibZMQ2::LibZMQ3 - The great new ZMQ::LibZMQ2::LibZMQ3!
+ZMQ::LibZMQ2::LibZMQ3 - Seamlessly Run LibZMQ Progs against LibZMQ3
 
 =head1 VERSION
 
@@ -19,35 +20,109 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
-    use ZMQ::LibZMQ2::LibZMQ3;
-
-    my $foo = ZMQ::LibZMQ2::LibZMQ3->new();
-    ...
+This provides an interface compatible with ZMQ::LibZMQ2, but runs against
+ZMQ::LibZMQ3.  For more information and documentation, see ZMQ::LibZMQ2
 
 =head1 EXPORT
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+=over
 
-=head1 SUBROUTINES/METHODS
+=item zmq_errno
 
-=head2 function1
+=item zmq_strerror
+
+=item zmq_init
+
+=item zmq_socket
+
+=item zmq_bind
+
+=item zmq_connect
+
+=item zmq_close
+
+=item zmq_getsockopt
+
+=item zmq_setsockopt
+
+=item zmq_send
+
+=item zmq_recv
+
+=item zmq_msg_init
+
+=item zmq_msg_init_data
+
+=item zmq_msg_init_size
+
+=item zmq_msg_copy
+
+=item zmq_msg_move
+
+=item zmq_msg_close
+
+=item zmq_msg_poll
+
+=item zmq_version
+
+=item zmq_device
+
+=item zmq_getsockopt_int
+
+=item zmq_getsockopt_int64
+
+=item zmq_getsockopt_string
+
+=item zmq_getsockopt_uint64
+
+=item zmq_setsockopt_int
+
+=item zmq_setsockopt_int64
+
+=item zmq_setsockopt_string
+
+=item zmq_setsockopt_uint64
+
+=back
 
 =cut
 
-sub function1 {
-}
+use base qw(Exporter);
+our @EXPORTS = qw(
+        zmq_errno zmq_strerror zmq_init zmq_term zmq_socket zmq_bind
+        zmq_connect zmq_close zmq_getsockopt zmq_setsockopt 
+        zmq_sent zmq_recv zmq_msg_init zmq_msg_init_data zmq_msg_init_size
+        zmq_msg_copy zmq_msg_move zmq_msg_close zmq_poll zmq_version
+        zmq_device
+        zmq_setsockopt_int zmq_setsockopt_int64 zmq_setsockopt_string
+        zmq_setsockopt_uint64 zmq_getsockopt_int zmq_getsockopt_int64
+        zmq_getsockopt_string zmq_getsockopt_uintint64
+);
 
-=head2 function2
+# Function override map:
+# libzmq2 => libzmq3
+#
+# if you need to skip, you can do
+# 
+# libzmq2 => 0 
+# 
+# and then define your own function
+my %fmap = (
+   zmq_send => 'zmq_sendmsg',
+   zmq_recv => 'zmq_recvmsg',
+);
 
-=cut
+{ 
+    no strict 'refs';
+    my $pkg = __PACKAGE__;
+    *{"${pkg}::$_->{export}"} = *{"ZMQ::LibZMQ3::$_->{import}"}
+    for map { 
+          my $target = $_;
+          $target = $fmap{$_} if exists $fmap{$_};
+          $target ? ( import => $target, export => $_ ) : ();
+    } @EXPORTS;
+};
 
-sub function2 {
-}
 
 =head1 AUTHOR
 
@@ -129,6 +204,13 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+=head2 TEST SUITE COPYRIGHT AND LICENSE
+
+The Test Suite is copied from ZMQ::LibZMQ, is copyright Daisuke Maki 
+<daisuke@endeworks.jp> and Steffen Mueller, <smueller@cpan.org>.
+
+It is released uner the same terms as Perl itself.
 
 
 =cut
