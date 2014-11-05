@@ -88,12 +88,15 @@ ZMQ::LibZMQ3.  For more information and documentation, see ZMQ::LibZMQ2
 =cut
 
 use base qw(Exporter);
-our @EXPORTS = qw(
-        zmq_errno zmq_strerror zmq_init zmq_term zmq_socket zmq_bind
-        zmq_connect zmq_close zmq_getsockopt zmq_setsockopt 
-        zmq_sent zmq_recv zmq_msg_init zmq_msg_init_data zmq_msg_init_size
-        zmq_msg_copy zmq_msg_move zmq_msg_close zmq_poll zmq_version
-        zmq_device
+our @EXPORT = qw(
+        zmq_errno zmq_strerror 
+        zmq_init zmq_term zmq_socket zmq_bind zmq_connect zmq_close 
+        zmq_getsockopt zmq_setsockopt 
+        zmq_send zmq_recv 
+        zmq_msg_init zmq_msg_init_data zmq_msg_init_size 
+        zmq_msg_data zmq_msg_size
+        zmq_msg_copy zmq_msg_move zmq_msg_close 
+        zmq_poll zmq_version zmq_device
         zmq_setsockopt_int zmq_setsockopt_int64 zmq_setsockopt_string
         zmq_setsockopt_uint64 zmq_getsockopt_int zmq_getsockopt_int64
         zmq_getsockopt_string zmq_getsockopt_uintint64
@@ -108,8 +111,9 @@ our @EXPORTS = qw(
 # 
 # and then define your own function
 my %fmap = (
-   zmq_send => 'zmq_sendmsg',
+   zmq_send => 0,
    zmq_recv => 'zmq_recvmsg',
+   zmq_poll => 0,
 );
 
 { 
@@ -121,8 +125,21 @@ my %fmap = (
           my $target = $_;
           $target = $fmap{$_} if exists $fmap{$_};
           $target ? { import => $target, export => $_ } : ();
-    } @EXPORTS;
+    } @EXPORT;
 };
+
+no warnings 'redefine';
+
+sub zmq_poll {
+    my $timeout = pop @_;
+    push @_, $timeout / 1000;
+    return ZMQ::LibZMQ3::zmq_poll(@_);
+}
+
+sub zmq_send {
+    my $rv = ZMQ::LibZMQ3::zmq_sendmsg(@_) || 0;
+    $rv == -1 ? -1 : 0;
+}
 
 
 =head1 AUTHOR
