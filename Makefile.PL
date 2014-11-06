@@ -16,10 +16,10 @@ WriteMakefile(
     },
     BUILD_REQUIRES => {
         'Test::More' => 0,
+        'Storable'   => 0,
     },
     PREREQ_PM => {
-        #'ABC'              => 1.6,
-        #'Foo::Bar::Module' => 5.0401,
+        'ZMQ::LibZMQ3' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'ZMQ-LibZMQ2-LibZMQ3-*' },
