@@ -23,6 +23,67 @@ our $VERSION = '0.01';
 This provides an interface compatible with ZMQ::LibZMQ2, but runs against
 ZMQ::LibZMQ3.  For more information and documentation, see ZMQ::LibZMQ2
 
+To port, assuming no fully qualified namespace calls, change
+
+ use ZMQ::LibZMQ2;
+
+to
+
+ use ZMQ::LibZMQ3::LibZMQ2;
+
+=head2 Porting Implementation and Caveats
+
+There are a few specific issues that come up when porting LibZMQ2 applications 
+to LibZMQ3.   This module attempts to provide a basic wrapper, preventing those
+most common issues from surfacing.  This is not intended for new development,
+but for cases where existing code uses ZMQ::LibZMQ2 and you need to deploy 
+against LibZMQ3.
+
+The primary cases covered are:
+
+=over
+
+=item renamed methods
+
+For example, zmq_recv becomes zmq_recvmsg.
+
+=item different return value semantics
+
+For example, zmq_sendmsg returning positive ints on success on 3.x while 
+zmq_send returns 0 on success in libzmq2
+
+=item poll argument semantics
+
+The argument is now in miliseconds rather than microseconds, so without wrapping
+this, applications poll for 1000 times as long.
+
+=back
+
+There are, however, a very few specific cases not covered by the porting layer.
+For the most part these are internal details that programs hopefully avoid 
+caring about but they were found during the test cases copied from ZMQ::LibZMQ2.
+
+These include:
+
+=over
+
+=item object class names
+
+Objects are blessed in the LibZMQ3 namespace instead of the LibZMQ2 namespace.
+For example, a socket is blessed as ZMQ::LibZMQ3::Socket rather than
+ZMQ::LibZMQ2::Socket.
+
+=item object internals
+
+Object reference semantics are not guaranteed to be useful across 
+implementations.  For example, sockets were blessed scalar references in
+LibZMQ2, but they are not in LibZMQ3.
+
+=back
+
+The above caveats are fairly minor, and are expected not to affect most
+applications.
+
 =head1 EXPORT
 
 =over
