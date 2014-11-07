@@ -17,6 +17,7 @@ WriteMakefile(
     BUILD_REQUIRES => {
         'Test::More' => 0,
         'Storable'   => 0,
+        'Proc::Guard' => 0,
     },
     PREREQ_PM => {
         'ZMQ::LibZMQ3' => 0,
