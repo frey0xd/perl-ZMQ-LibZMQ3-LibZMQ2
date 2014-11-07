@@ -23,7 +23,7 @@ higher, and recompile ZMQ::LibZMQ2.pm against the new library.
 EOM
 
 diag sprintf( 
-    "\n   This is ZMQ::LibZMQ2.pm version %s\n   Linked against zeromq2 %s\n%s",
+    "\n   This is ZMQ::LibZMQ3::LibZMQ2.pm version %s\n   Linked against zeromq3 %s\n%s",
     $ZMQ::LibZMQ2::VERSION,
     $version, 
     ($major + $minor / 10) < 2.1 ? $warning : ''
