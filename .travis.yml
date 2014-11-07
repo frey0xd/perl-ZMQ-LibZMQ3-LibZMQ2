@@ -9,6 +9,8 @@ perl:
 before_install:
    - "cpanm Test::More"
    - "cpanm Storable"
+   - "cpanm Proc::Guard"
+   - "cpanm AnyEvent"
    - "sudo apt-get install -y libzmq3-dev"
    - "cpanm ZMQ::LibZMQ3"
    - "cpanm Devel::Cover::Report::Coveralls"
