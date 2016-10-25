@@ -9,15 +9,15 @@ perl:
   - '5.18'
   - '5.20'
 before_install:
-   - "cpanm Test::More"
-   - "cpanm Storable"
-   - "cpanm Proc::Guard"
-   - "cpanm AnyEvent"
    - "sudo apt-get install -y libzmq3-dev"
-   - "cpanm ZMQ::LibZMQ3"
-   - "cpanm Devel::Cover::Report::Coveralls"
+   - "cpanm -qn Test::More"
+   - "cpanm -qn Storable"
+   - "cpanm -qn Proc::Guard"
+   - "cpanm -qn AnyEvent"
+   - "cpanm -qn ZMQ::LibZMQ3"
+   - "cpanm -qn Test::Requires::Git"
+   - "cpanm -qn Devel::Cover::Report::Codecov"
    - "export RELEASE_TESTING=1"
    - "perl Makefile.PL"
 script:
-   - make test
-   - cover -test -report coveralls
+   - cover -test -report codecov
