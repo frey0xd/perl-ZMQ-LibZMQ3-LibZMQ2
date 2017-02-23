@@ -9,10 +9,6 @@ use ZMQ::LibZMQ3;
 
 ZMQ::LibZMQ3::LibZMQ2 - Seamlessly Run LibZMQ Progs against LibZMQ3
 
-=head1 VERSION
-
-Version 0.02
-
 =cut
 
 our $VERSION = '0.02';
