@@ -20,7 +20,7 @@ ZMQ::LibZMQ3.  For more information and documentation, see ZMQ::LibZMQ2
 
 To port, assuming no fully qualified namespace calls, change
 
- use ZMQ::LibZMQ2;
+ #use ZMQ::LibZMQ2;
 
 to
 
