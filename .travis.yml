@@ -15,7 +15,6 @@ before_install:
 
 install:
    - cpanm --quiet --notest Dist::Zilla Dist::Zilla::App::Command::cover App::cpm Devel::Cover::Report::Codecov
-   - cpm install -w 2 --mirror=http://cpan.cpantesters.org/ -g ZMQ::LibZMQ2 || cat /home/travis/.perl-cpm/build.log
    - cpm install -w 2 --mirror=http://cpan.cpantesters.org/ -g $(dzil authordeps --missing)
    - cpm install -w 2 --mirror=http://cpan.cpantesters.org/ -g $(dzil listdeps --author --missing)
 
