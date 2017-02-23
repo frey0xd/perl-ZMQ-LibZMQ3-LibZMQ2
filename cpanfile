@@ -1,5 +1,4 @@
 requires 'ZMQ::LibZMQ3';
-requires 'ZMQ::LibZMQ2';
 requires 'perl', '5.006';
 
 on configure => sub {
