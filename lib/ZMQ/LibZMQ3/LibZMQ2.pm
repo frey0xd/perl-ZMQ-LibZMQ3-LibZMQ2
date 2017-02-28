@@ -9,14 +9,9 @@ use ZMQ::LibZMQ3;
 
 ZMQ::LibZMQ3::LibZMQ2 - Seamlessly Run LibZMQ Progs against LibZMQ3
 
-=head1 VERSION
-
-Version 0.02
-
 =cut
 
-our $VERSION = '0.02';
-
+our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
@@ -25,7 +20,7 @@ ZMQ::LibZMQ3.  For more information and documentation, see ZMQ::LibZMQ2
 
 To port, assuming no fully qualified namespace calls, change
 
- use ZMQ::LibZMQ2;
+ #use ZMQ::LibZMQ2;
 
 to
 
@@ -33,10 +28,10 @@ to
 
 =head2 Porting Implementation and Caveats
 
-There are a few specific issues that come up when porting LibZMQ2 applications 
+There are a few specific issues that come up when porting LibZMQ2 applications
 to LibZMQ3.   This module attempts to provide a basic wrapper, preventing those
 most common issues from surfacing.  This is not intended for new development,
-but for cases where existing code uses ZMQ::LibZMQ2 and you need to deploy 
+but for cases where existing code uses ZMQ::LibZMQ2 and you need to deploy
 against LibZMQ3.
 
 The primary cases covered are:
@@ -49,7 +44,7 @@ For example, zmq_recv becomes zmq_recvmsg.
 
 =item different return value semantics
 
-For example, zmq_sendmsg returning positive ints on success on 3.x while 
+For example, zmq_sendmsg returning positive ints on success on 3.x while
 zmq_send returns 0 on success in libzmq2
 
 =item poll argument semantics
@@ -60,7 +55,7 @@ this, applications poll for 1000 times as long.
 =back
 
 There are, however, a very few specific cases not covered by the porting layer.
-For the most part these are internal details that programs hopefully avoid 
+For the most part these are internal details that programs hopefully avoid
 caring about but they were found during the test cases copied from ZMQ::LibZMQ2.
 
 These include:
@@ -75,7 +70,7 @@ ZMQ::LibZMQ2::Socket.
 
 =item object internals
 
-Object reference semantics are not guaranteed to be useful across 
+Object reference semantics are not guaranteed to be useful across
 implementations.  For example, sockets were blessed scalar references in
 LibZMQ2, but they are not in LibZMQ3.
 
@@ -149,47 +144,52 @@ applications.
 =cut
 
 use base qw(Exporter);
+## no critic (ProhibitAutomaticExportation)
 our @EXPORT = qw(
-        zmq_errno zmq_strerror 
-        zmq_init zmq_term zmq_socket zmq_bind zmq_connect zmq_close 
-        zmq_getsockopt zmq_setsockopt 
-        zmq_send zmq_recv 
-        zmq_msg_init zmq_msg_init_data zmq_msg_init_size 
-        zmq_msg_data zmq_msg_size
-        zmq_msg_copy zmq_msg_move zmq_msg_close 
-        zmq_poll zmq_version zmq_device
-        zmq_setsockopt_int zmq_setsockopt_int64 zmq_setsockopt_string
-        zmq_setsockopt_uint64 zmq_getsockopt_int zmq_getsockopt_int64
-        zmq_getsockopt_string zmq_getsockopt_uintint64
+    zmq_errno zmq_strerror
+    zmq_init zmq_term zmq_socket zmq_bind zmq_connect zmq_close
+    zmq_getsockopt zmq_setsockopt
+    zmq_send zmq_recv
+    zmq_msg_init zmq_msg_init_data zmq_msg_init_size
+    zmq_msg_data zmq_msg_size
+    zmq_msg_copy zmq_msg_move zmq_msg_close
+    zmq_poll zmq_version zmq_device
+    zmq_setsockopt_int zmq_setsockopt_int64 zmq_setsockopt_string
+    zmq_setsockopt_uint64 zmq_getsockopt_int zmq_getsockopt_int64
+    zmq_getsockopt_string zmq_getsockopt_uintint64
 );
 
 # Function override map:
 # libzmq2 => libzmq3
 #
 # if you need to skip, you can do
-# 
-# libzmq2 => 0 
-# 
+#
+# libzmq2 => 0
+#
 # and then define your own function
 my %fmap = (
-   zmq_send => 0,
-   zmq_recv => 'zmq_recvmsg',
-   zmq_poll => 0,
+    zmq_send => 0,
+    zmq_recv => 'zmq_recvmsg',
+    zmq_poll => 0,
 );
 
-{ 
-    no strict 'refs';
-    no warnings 'once';
+{
+    no strict 'refs';      ## no critic (ProhibitNoStrict)
+    no warnings 'once';    ## no critic (ProhibitNoWarnings)
     my $pkg = __PACKAGE__;
-    *{"${pkg}::$_->{export}"} = *{"ZMQ::LibZMQ3::$_->{import}"}
-    for map { 
-          my $target = $_;
-          $target = $fmap{$_} if exists $fmap{$_};
-          $target ? { import => $target, export => $_ } : ();
+    *{"${pkg}::$_->{export}"} = *{"ZMQ::LibZMQ3::$_->{import}"} for map {
+        my $target = $_;
+        $target = $fmap{$_} if exists $fmap{$_};
+        $target
+            ? {
+            import => $target,
+            export => $_
+            }
+            : ();
     } @EXPORT;
 };
 
-no warnings 'redefine';
+no warnings 'redefine';    ## no critic (ProhibitNoWarnings)
 
 sub zmq_poll {
     my $timeout = pop @_;
@@ -199,9 +199,8 @@ sub zmq_poll {
 
 sub zmq_send {
     my $rv = ZMQ::LibZMQ3::zmq_sendmsg(@_) || 0;
-    $rv == -1 ? -1 : 0;
+    return $rv == -1 ? -1 : 0;
 }
-
 
 =head1 AUTHOR
 
@@ -258,7 +257,7 @@ included LICENSE file.
 
 =head2 TEST SUITE COPYRIGHT AND LICENSE
 
-The Test Suite is copied from ZMQ::LibZMQ, is copyright Daisuke Maki 
+The Test Suite is copied from ZMQ::LibZMQ, is copyright Daisuke Maki
 <daisuke@endeworks.jp> and Steffen Mueller, <smueller@cpan.org>.
 
 It is released uner the same terms as Perl itself.
@@ -266,4 +265,4 @@ It is released uner the same terms as Perl itself.
 
 =cut
 
-1; # End of ZMQ::LibZMQ2::LibZMQ3
+1;    # End of ZMQ::LibZMQ2::LibZMQ3
